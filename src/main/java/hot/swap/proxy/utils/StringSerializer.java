@@ -7,6 +7,7 @@ import java.nio.charset.CharsetDecoder;
 /**
  * Created by leeshine on 3/6/17.
  */
+
 public class StringSerializer {
     private static final Charset charSet = Charset.forName("UTF-8");
     private static final CharsetDecoder decoder = charSet.newDecoder();

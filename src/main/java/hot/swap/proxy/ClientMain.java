@@ -1,16 +1,10 @@
 package hot.swap.proxy;
 
-import com.google.gson.JsonObject;
-import hot.swap.proxy.base.KryoValuesSerializer;
 import hot.swap.proxy.base.Values;
 import hot.swap.proxy.funcTest.*;
 import hot.swap.proxy.smanager.SwapManager;
 import hot.swap.proxy.sproxy.SwapProxy;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
 
 /**
  * Created by leeshine on 3/3/17.
@@ -22,7 +16,6 @@ public class ClientMain {
 
         SwapProxy caseProxy = new SwapProxy(new UpperModule());
         SwapProxy printProxy = new SwapProxy(new PrintModule());
-        caseProxy.addProxy(printProxy);
 
         manager.addProxy(UpperModule.class.getName(),caseProxy);
         manager.addProxy(PrintModule.class.getName(),printProxy);
