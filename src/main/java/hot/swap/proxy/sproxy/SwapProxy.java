@@ -4,14 +4,13 @@ import hot.swap.proxy.base.Values;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
 import hot.swap.proxy.utils.BehaviorInterface;
-
 import java.util.Random;
 
 /**
  * Created by leeshine on 3/6/17.
  */
 
-public class SwapProxy implements BehaviorInterface,SwapControlInterface{
+public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     private SwapModule swapModule;
     private volatile Boolean swap_lock;
     private String proxyName;
@@ -56,10 +55,8 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface{
     }
 
     public boolean checkModuleState(){
-
     }
 
     public void getInternalState(){
-
     }
 }
