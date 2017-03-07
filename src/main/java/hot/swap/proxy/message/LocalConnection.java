@@ -18,8 +18,13 @@ public class LocalConnection implements IConnection{
         this.messageCenter = messageCenter;
     }
 
-    public Object recv(){
-        return queue.poll();
+    public Object recv(){//??
+        try{
+            return queue.take();
+        }catch (Exception e){
+
+        }
+        return null;
     }
 
     public void send(Values values){

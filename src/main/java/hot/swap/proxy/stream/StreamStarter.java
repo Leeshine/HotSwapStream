@@ -21,5 +21,15 @@ public class StreamStarter {
         //submit
         Map<String,SComponent> componentMap = builder.getComponentMap();
         Map<String,List<String>> inputList = builder.getInputList();
+
+        for(Map.Entry entry : componentMap.entrySet()){
+            SComponent component = (SComponent)entry.getValue();
+            component.init(queueManager,messageCenter);
+            if(component.checkSwapable()){//swapable
+
+            }else{
+            }
+        }
+
     }
 }

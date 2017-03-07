@@ -10,12 +10,14 @@ import hot.swap.proxy.utils.BehaviorInterface;
  * Created by leeshine on 3/7/17.
  */
 
-public abstract class SComponent implements BehaviorInterface {
+public abstract class SComponent implements BehaviorInterface{
     private IConnection connection;
     private String id;
+    private boolean Swapable;
 
-    public SComponent(String _id){
+    public SComponent(String _id, Boolean swapable){
         this.id = _id;
+        Swapable = swapable;
     }
 
     public void init(QueueManager queueManager, MessageCenter messageCenter){
@@ -29,4 +31,10 @@ public abstract class SComponent implements BehaviorInterface {
     public void send(Values values){
         connection.send(values);
     }
+
+    public boolean checkSwapable(){
+        return Swapable;
+    }
+
+    public abstract void startRun();
 }
