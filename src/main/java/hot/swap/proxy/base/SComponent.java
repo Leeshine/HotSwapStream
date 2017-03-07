@@ -32,6 +32,10 @@ public abstract class SComponent implements BehaviorInterface{
         connection.send(values);
     }
 
+    public String getId(){
+        return id;
+    }
+
     public boolean checkSwapable(){
         return Swapable;
     }

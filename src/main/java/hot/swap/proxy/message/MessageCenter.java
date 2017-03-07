@@ -43,4 +43,15 @@ public class MessageCenter {
             targetQueue.put(values);
         }
     }
+
+    public void handleInputList(Map<String,List<String>> inputList){
+        for(Map.Entry<String,List<String>> entry : inputList.entrySet()){
+            String dst = entry.getKey();
+            List<String> srcs = entry.getValue();
+            for(int i=0; i<srcs.size(); ++i){
+                String src = srcs.get(i);
+                addTaskPair(src,dst);
+            }
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package hot.swap.proxy.sproxy;
 
+import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.Values;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
@@ -11,11 +12,11 @@ import java.util.Random;
  */
 
 public class SwapProxy implements BehaviorInterface,SwapControlInterface {
-    private SwapModule swapModule;
+    private SComponent swapModule;
     private volatile Boolean swap_lock;
     private String proxyName;
 
-    public SwapProxy(SwapModule module){
+    public SwapProxy(SComponent module){
         this.swapModule = module;
         Random random = new Random();
         proxyName = String.valueOf(random.nextInt())+"_"+getModuleName();
@@ -58,5 +59,19 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     }
 
     public void getInternalState(){
+    }
+
+    class RunClass implements Runnable{
+        public void run() {
+            while (true){
+                Values val = (Values)swapModule.recv();
+                execute(val);
+            }
+        }
+    }
+
+    public void startRun(){
+        RunClass runClass = new RunClass();
+        new Thread(runClass).start();
     }
 }
