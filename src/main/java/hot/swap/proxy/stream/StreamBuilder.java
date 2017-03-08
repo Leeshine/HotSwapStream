@@ -14,7 +14,8 @@ public class StreamBuilder {
     private Map<String,SComponent> componentMap = new HashMap<String, SComponent>();
     private Map<String,List<String>> inputList = new HashMap<String, List<String>>();
 
-    public ComponentDeclarer setModule(String id, SComponent component){
+    public ComponentDeclarer setModule(SComponent component){
+        String id = component.getId();
         checkComponentId(id);
         componentMap.put(id,component);
 
@@ -26,7 +27,7 @@ public class StreamBuilder {
             throw new IllegalArgumentException("component has been already declared for id: " + id);
     }
 
-    class ComponentDeclarer{
+    public class ComponentDeclarer{
         private String _id;
 
         public ComponentDeclarer(String id){

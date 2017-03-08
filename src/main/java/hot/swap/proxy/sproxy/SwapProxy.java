@@ -19,11 +19,12 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     public SwapProxy(SComponent module){
         this.swapModule = module;
         Random random = new Random();
+        swap_lock = false;
         proxyName = String.valueOf(random.nextInt())+"_"+getModuleName();
     }
 
     public void execute(Values values) {
-        while(true) {//to do
+        /*while(true) {//to do
             synchronized (swap_lock) {
                 if (swap_lock) {
                     try {
@@ -34,7 +35,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
                 }
                 else break;
             }
-        }
+        }*/
 
         swapModule.execute(values);
     }
@@ -52,14 +53,14 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         return proxyName;
     }
 
-    public void blockNewCall(){
+    /*public void blockNewCall(){
     }
 
     public boolean checkModuleState(){
     }
 
     public void getInternalState(){
-    }
+    }*/
 
     class RunClass implements Runnable{
         public void run() {

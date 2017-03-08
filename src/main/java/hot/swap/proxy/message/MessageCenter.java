@@ -21,7 +21,7 @@ public class MessageCenter {
         this.queueManager = queueManager;
     }
 
-    public void init(){//to do
+    public void init(){//to do ?? replace by handleInputList
     }
 
     public void addTaskPair(String src, String dst){

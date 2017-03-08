@@ -8,15 +8,17 @@ import hot.swap.proxy.smodule.SwapModule;
  */
 
 public class LowerModule extends SwapModule{
+    public LowerModule(String _id) {
+        super(_id);
+    }
+
     @Override
-    public Values execute(Values values) {
+    public void execute(Values values) {
         Values newValues = new Values();
 
         for(int i=0; i<values.size(); ++i){
             String str = values.getString(i);
-            newValues.add(str.toLowerCase());
+            send(new Values(str.toLowerCase()));
         }
-
-        return newValues;
     }
 }
