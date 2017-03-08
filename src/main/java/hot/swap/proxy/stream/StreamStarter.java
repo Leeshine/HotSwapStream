@@ -14,11 +14,11 @@ import java.util.Map;
  */
 
 public class StreamStarter {
-    public static void submitTopology(StreamBuilder builder, String topologyName){
+    public static SwapManager submitTopology(StreamBuilder builder, String topologyName){
         //start MessageCenter QueueManager
         QueueManager queueManager = new QueueManager();
         MessageCenter messageCenter = new MessageCenter(queueManager);
-        SwapManager swapManager = new SwapManager();
+        SwapManager swapManager = new SwapManager(queueManager,messageCenter);
 
         //submit
         Map<String,SComponent> componentMap = builder.getComponentMap();
@@ -38,5 +38,7 @@ public class StreamStarter {
                 component.startRun();
             }
         }
+
+        return swapManager;
     }
 }

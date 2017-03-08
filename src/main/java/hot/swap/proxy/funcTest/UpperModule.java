@@ -17,6 +17,5 @@ public class UpperModule extends SwapModule{
             String str = values.getString(i);
             send(new Values(str.toUpperCase()));
         }
-
     }
 }

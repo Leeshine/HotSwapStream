@@ -22,7 +22,7 @@ public class LocalConnection implements IConnection{
         try{
             return queue.take();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return null;
     }

@@ -2,10 +2,7 @@ package hot.swap.proxy.message;
 
 import hot.swap.proxy.base.Values;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -13,11 +10,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 
 public class MessageCenter {
-    private Map<String,List<String>> messageMapForTask;
+    private Map<String,Set<String>> messageMapForTask; //src --> dst
+    private Map<String,Set<String>> sourceMap; // dst --> srcs
     private QueueManager queueManager;
 
     public MessageCenter(QueueManager queueManager){
-        messageMapForTask = new HashMap<String, List<String>>();
+        messageMapForTask = new HashMap<String, Set<String>>();
+        sourceMap = new HashMap<String, Set<String>>();
         this.queueManager = queueManager;
     }
 
@@ -26,19 +25,28 @@ public class MessageCenter {
 
     public void addTaskPair(String src, String dst){
         if(!messageMapForTask.containsKey(src)){
-            List<String> list = new ArrayList<String>();
+            Set<String> list = new HashSet<String>();
             messageMapForTask.put(src,list);
         }
         messageMapForTask.get(src).add(dst);
+
+        if(!sourceMap.containsKey(dst)){
+            Set<String> ls = new HashSet<String>();
+            sourceMap.put(dst,ls);
+        }
+        sourceMap.get(dst).add(src);
     }
 
     public void send(Values values, String taskId) throws Exception{
-        if(!messageMapForTask.containsKey(taskId))
-            throw new Exception("wrong task id!!");
+        if(!messageMapForTask.containsKey(taskId)) {
+         //   throw new Exception("wrong task id!! " + taskId);
+            return ; // ?? to do
+        }
 
-        List<String> targetTaskIds = messageMapForTask.get(taskId);
-        for(int i=0; i<targetTaskIds.size(); ++i){
-            String targetTaskId = targetTaskIds.get(i);
+        Set<String> targetTaskIds = messageMapForTask.get(taskId);
+        Iterator<String> iterator = targetTaskIds.iterator();
+        while(iterator.hasNext()){
+            String targetTaskId = iterator.next();
             LinkedBlockingQueue targetQueue = queueManager.getQueueByTaskId(targetTaskId);
             targetQueue.put(values);
         }
@@ -52,6 +60,26 @@ public class MessageCenter {
                 String src = srcs.get(i);
                 addTaskPair(src,dst);
             }
+        }
+    }
+
+    public void changeTask(String oldId, String newId){
+        queueManager.changeTaskId(oldId,newId);
+
+        messageMapForTask.put(newId,messageMapForTask.get(oldId));
+        messageMapForTask.remove(oldId);
+
+        Set<String> sourceList = sourceMap.get(oldId);
+        sourceMap.put(newId,sourceList);
+        sourceList.remove(oldId);
+
+        Iterator<String> iterator = sourceList.iterator();
+        while(iterator.hasNext()){
+            String source = iterator.next();
+            Set<String> sets = messageMapForTask.get(source);
+            sets.remove(oldId);
+            sets.add(newId);
+            messageMapForTask.put(source,sets);
         }
     }
 }

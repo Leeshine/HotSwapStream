@@ -31,4 +31,13 @@ public class QueueManager {
 
         return queueList.get(queueMap.get(takid));
     }
+
+    public void changeTaskId(String oldId, String newId){
+        if(!queueMap.containsKey(oldId)){
+            getQueueByTaskId(newId);
+        }else{
+            queueMap.put(newId,queueMap.get(oldId));
+            queueMap.remove(oldId);
+        }
+    }
 }
