@@ -35,6 +35,10 @@ public class LocalConnection implements IConnection{
         }
     }
 
+    public void changeTaskId(String newId){
+        this.taskId = newId;
+    }
+
     public void close() {
     }
 }

@@ -5,6 +5,9 @@ import hot.swap.proxy.base.Values;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
 import hot.swap.proxy.utils.BehaviorInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Random;
 
 /**
@@ -12,6 +15,7 @@ import java.util.Random;
  */
 
 public class SwapProxy implements BehaviorInterface,SwapControlInterface {
+    private Logger LOG = LoggerFactory.getLogger(SwapProxy.class);
     private SComponent swapModule;
     private volatile Boolean swap_lock;
     private String proxyName;
@@ -42,7 +46,18 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         swapModule.execute(values);
     }
 
-    public void readySwap(SwapModule swapModule){
+    private void setNewModule(SwapModule swapModule){
+        this.swapModule = swapModule;
+    }
+    public String getModuleName(){
+        return swapModule.getClass().getName();
+    }
+
+    public String getProxyName(){
+        return proxyName;
+    }
+
+    public void handleSwap(SwapModule swapModule) {
         //blockCall();
         setNewModule(swapModule);
         //unblockCall();
@@ -53,7 +68,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
             try {
                 thread.wait();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
     }
@@ -63,32 +78,19 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
             try {
                 thread.notify();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
     }
 
-    private void setNewModule(SwapModule swapModule){
-        this.swapModule = swapModule;
-    }
-
-
-    public String getModuleName(){
-        return swapModule.getClass().getName();
-    }
-
-    public String getProxyName(){
-        return proxyName;
-    }
-
-    /*public void blockNewCall(){
+    public void blockNewCall(){
     }
 
     public boolean checkModuleState(){
     }
 
     public void getInternalState(){
-    }*/
+    }
 
     class RunClass implements Runnable{
         public void run() {
@@ -101,5 +103,9 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
 
     public void startRun(){
         thread.start();
+    }
+
+    public void rollBack(){
+
     }
 }

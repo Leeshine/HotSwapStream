@@ -5,7 +5,6 @@ import hot.swap.proxy.funcTest.LowerModule;
 import hot.swap.proxy.funcTest.PrintModule;
 import hot.swap.proxy.funcTest.UpperModule;
 import hot.swap.proxy.smanager.SwapManager;
-import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.stream.StreamBuilder;
 import hot.swap.proxy.stream.StreamStarter;
 

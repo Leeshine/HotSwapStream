@@ -12,4 +12,6 @@ public interface IConnection {
     public void send(Values values);
 
     public void close();
+
+    public void changeTaskId(String newId);
 }

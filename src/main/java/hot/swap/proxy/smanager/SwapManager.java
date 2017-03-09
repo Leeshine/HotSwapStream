@@ -33,6 +33,9 @@ public class SwapManager{
     public void swapModule(String oldId, String newId, String newModule) throws Exception{
         String proxyName = module2Proxy.get(oldId);
         SwapProxy proxy = proxyMap.get(proxyName);
+
+        //time service
+
         //SwapModule swapModule = (SwapModule) Class.forName(newModule).newInstance();
         Class newClas = Class.forName(newModule);
         Constructor constructor = newClas.getDeclaredConstructor(new Class[]{String.class});
@@ -43,7 +46,7 @@ public class SwapManager{
         swapModule.init(queueManager,messageCenter);
 
         module2Proxy.put(newModule,proxyName);
-        proxy.readySwap(swapModule);
+        proxy.handleSwap(swapModule);
         //proxy.setNewModule(swapModule);
         //proxy.startRun(); ??new restart?
     }

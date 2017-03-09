@@ -9,5 +9,5 @@ import hot.swap.proxy.smodule.FunModuleIdentifier;
 public interface SwapInterface {
     public FunModuleIdentifier getIdentifier();
     public String getState();
-    public void checkState();
+    public void checkState() throws Exception;
 }

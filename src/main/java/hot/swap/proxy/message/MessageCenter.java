@@ -12,12 +12,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageCenter {
     private Map<String,Set<String>> messageMapForTask; //src --> dst
     private Map<String,Set<String>> sourceMap; // dst --> srcs
+    private Map<String,IConnection> connectionMap; //task --> connection
     private QueueManager queueManager;
 
     public MessageCenter(QueueManager queueManager){
         messageMapForTask = new HashMap<String, Set<String>>();
         sourceMap = new HashMap<String, Set<String>>();
+        connectionMap = new HashMap<String, IConnection>();
         this.queueManager = queueManager;
+    }
+
+    public void registerModule(String taskId){
+        connectionMap.put(taskId,new LocalConnection(taskId,queueManager,this));
     }
 
     public void init(){//to do ?? replace by handleInputList
@@ -64,6 +70,11 @@ public class MessageCenter {
     }
 
     public void changeTask(String oldId, String newId){
+        //to do change connection taskid  ?? delete
+        connectionMap.get(oldId).changeTaskId(newId);
+        connectionMap.put(newId,connectionMap.get(oldId));
+        connectionMap.remove(oldId);
+
         queueManager.changeTaskId(oldId,newId);
 
         messageMapForTask.put(newId,messageMapForTask.get(oldId));
