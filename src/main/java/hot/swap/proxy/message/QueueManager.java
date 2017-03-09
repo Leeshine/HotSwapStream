@@ -6,19 +6,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by leeshine on 3/7/17.
  */
 public class QueueManager {
+    //to do thread safe
     private List<LinkedBlockingQueue<Values>> queueList;
-    private Map<String,Integer> queueMap;
+    private ConcurrentHashMap<String,Integer> queueMap;
     private Integer queueCount;
 
     public QueueManager(){
         queueList = new ArrayList<LinkedBlockingQueue<Values>>();
-        queueMap = new HashMap<String, Integer>();
+        queueMap = new ConcurrentHashMap<String, Integer>();
         queueCount = 0;
     }
 

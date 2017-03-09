@@ -3,6 +3,8 @@ package hot.swap.proxy.smodule;
 import hot.swap.proxy.base.KryoValuesSerializer;
 import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.Values;
+import hot.swap.proxy.message.MessageCenter;
+import hot.swap.proxy.message.QueueManager;
 import hot.swap.proxy.smodule.interfaceutil.SwapInterface;
 import hot.swap.proxy.trnascation.Vote;
 import hot.swap.proxy.utils.Pair;
@@ -14,9 +16,10 @@ import org.slf4j.LoggerFactory;
  * Created by leeshine on 3/6/17.
  */
 
-public class SwapModule extends SComponent implements  SwapInterface{
+// to do state safety
+public class SwapModule extends SComponent implements  SwapInterface,Cloneable{
     private Logger LOG = LoggerFactory.getLogger(SwapModule.class);
-    private ModuleState state;
+    private String state;
 
     private SwapModule(){// should not be used!!
         super(RandomUtil.RandomString(),true);
@@ -41,6 +44,12 @@ public class SwapModule extends SComponent implements  SwapInterface{
     }
 
     @Override
+    public void init(QueueManager queueManager, MessageCenter messageCenter) {
+        super.init(queueManager, messageCenter);
+        state = ModuleState.IDLE;
+    }
+
+    @Override
     public void startRun(){
     }
 
@@ -49,7 +58,7 @@ public class SwapModule extends SComponent implements  SwapInterface{
         return serializer.serializeObject(this);
     }
 
-    public Pair<Vote,byte[]> prepareSwap(){
+    public Pair<Vote,SwapModule> prepareSwap(){
         try{
             checkState();
         }catch (Exception e){
@@ -72,5 +81,18 @@ public class SwapModule extends SComponent implements  SwapInterface{
                 throw new Exception("error state in prepared time");
             state = ModuleState.VOTING;
         }
+    }
+
+    public void setState(String moduleState){
+        this.state = moduleState;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        //to do deep clone??
+        SwapModule cloneClass = null;
+        cloneClass = (SwapModule)super.clone();
+
+        return cloneClass;
     }
 }

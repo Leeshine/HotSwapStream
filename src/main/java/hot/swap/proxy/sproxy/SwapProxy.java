@@ -1,7 +1,8 @@
 package hot.swap.proxy.sproxy;
 
-import hot.swap.proxy.base.SComponent;
+import hot.swap.proxy.base.KryoValuesSerializer;
 import hot.swap.proxy.base.Values;
+import hot.swap.proxy.smodule.ModuleState;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
 import hot.swap.proxy.utils.BehaviorInterface;
@@ -16,12 +17,12 @@ import java.util.Random;
 
 public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     private Logger LOG = LoggerFactory.getLogger(SwapProxy.class);
-    private SComponent swapModule;
+    private SwapModule swapModule;
     private volatile Boolean swap_lock;
     private String proxyName;
     private Thread thread;
 
-    public SwapProxy(SComponent module){
+    public SwapProxy(SwapModule module){
         this.swapModule = module;
         Random random = new Random();
         swap_lock = false;
@@ -43,7 +44,9 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
             }
         }*/
 
+        swapModule.setState(ModuleState.BUSY);
         swapModule.execute(values);
+        swapModule.setState(ModuleState.IDLE);
     }
 
     private void setNewModule(SwapModule swapModule){
@@ -58,32 +61,19 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     }
 
     public void handleSwap(SwapModule swapModule) {
-        //blockCall();
+        blockCall();
         setNewModule(swapModule);
-        //unblockCall();
+        unblockCall();
     }
 
     private void blockCall(){
-        synchronized (thread) {
-            try {
-                thread.wait();
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
-            }
-        }
     }
 
     private void unblockCall(){
-        synchronized (thread) {
-            try {
-                thread.notify();
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
-            }
-        }
     }
 
     public void blockNewCall(){
+        swapModule.setState(ModuleState.BLOCKED);
     }
 
     public boolean checkModuleState(){
@@ -105,7 +95,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         thread.start();
     }
 
-    public void rollBack(){
+    public void rollBack(SwapModule originModule){
 
     }
 }
