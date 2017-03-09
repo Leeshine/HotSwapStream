@@ -71,6 +71,7 @@ public class MessageCenter {
 
     public void changeTask(String oldId, String newId){
         //to do change connection taskid  ?? delete
+        // proxyname = modulename  so don't need to remove
         connectionMap.get(oldId).changeTaskId(newId);
         connectionMap.put(newId,connectionMap.get(oldId));
         connectionMap.remove(oldId);

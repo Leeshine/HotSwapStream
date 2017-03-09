@@ -3,8 +3,7 @@ package hot.swap.proxy.smodule;
 import hot.swap.proxy.base.KryoValuesSerializer;
 import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.Values;
-import hot.swap.proxy.message.MessageCenter;
-import hot.swap.proxy.message.QueueManager;
+import hot.swap.proxy.message.IConnection;
 import hot.swap.proxy.smodule.interfaceutil.SwapInterface;
 import hot.swap.proxy.trnascation.Vote;
 import hot.swap.proxy.utils.Pair;
@@ -20,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public class SwapModule extends SComponent implements  SwapInterface,Cloneable{
     private Logger LOG = LoggerFactory.getLogger(SwapModule.class);
     private String state;
+    private String proxyName;
 
     private SwapModule(){// should not be used!!
         super(RandomUtil.RandomString(),true);
@@ -28,7 +28,7 @@ public class SwapModule extends SComponent implements  SwapInterface,Cloneable{
 
     public SwapModule(String _id){
         super(_id,true);
-        state = ModuleState.IDLE;
+        state = ModuleState.INIT;
     }
 
     public  void execute(Values values){
@@ -44,9 +44,10 @@ public class SwapModule extends SComponent implements  SwapInterface,Cloneable{
     }
 
     @Override
-    public void init(QueueManager queueManager, MessageCenter messageCenter) {
-        super.init(queueManager, messageCenter);
+    public void init(IConnection connection,String proxyName) {
+        super.init(connection,proxyName);
         state = ModuleState.IDLE;
+        this.proxyName = proxyName;
     }
 
     @Override

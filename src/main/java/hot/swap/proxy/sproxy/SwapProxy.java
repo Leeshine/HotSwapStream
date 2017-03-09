@@ -1,6 +1,7 @@
 package hot.swap.proxy.sproxy;
 
 import hot.swap.proxy.base.Values;
+import hot.swap.proxy.message.IConnection;
 import hot.swap.proxy.smodule.ModuleState;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
@@ -10,7 +11,6 @@ import hot.swap.proxy.utils.Pair;
 import hot.swap.proxy.utils.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
 
 /**
@@ -22,29 +22,18 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     private SwapModule swapModule;
     private volatile Boolean swap_lock;
     private String proxyName;
-    private Thread thread;
+    private RunClass runClass;
+    private IConnection connection;
 
-    public SwapProxy(SwapModule module){
+    public SwapProxy(String proxyName,SwapModule module, IConnection connection){
+        this.proxyName = proxyName;
         this.swapModule = module;
+        this.connection = connection;
         swap_lock = false;
-        proxyName = RandomUtil.RandomString(6);
-        thread = new Thread(new RunClass());
+        runClass = new RunClass();
     }
 
     public void execute(Values values) {
-        /*while(true) {//to do
-            synchronized (swap_lock) {
-                if (swap_lock) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else break;
-            }
-        }*/
-
         swapModule.setState(ModuleState.BUSY);
         swapModule.execute(values);
         swapModule.setState(ModuleState.IDLE);
@@ -53,6 +42,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     private void setNewModule(SwapModule swapModule){
         this.swapModule = swapModule;
     }
+
     public String getModuleName(){
         return swapModule.getClass().getName();
     }
@@ -67,7 +57,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         unblockCall();
     }
 
-    public Vote handleSwap(String newId, String className){
+    public Vote handleSwap(String newId, String className){ // swap entrance
         blockCall();
         Vote res = swapTranscation(newId,className);
         unblockCall();
@@ -99,18 +89,27 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         constructor.setAccessible(true);
 
         SwapModule newModule = (SwapModule)constructor.newInstance(new Object[]{newId});
+        newModule.init(connection);
         return newModule;
     }
 
-    public void rollBack() {
+    public void rollBack() {//only for swapModule
         swapModule.setState(ModuleState.IDLE);
     }
 
     private void blockCall(){
+        synchronized (swap_lock){
+            swap_lock = true;
+        }
         swapModule.setState(ModuleState.BLOCKED);
     }
 
     private void unblockCall(){
+        synchronized (swap_lock){
+            swap_lock = false;
+            swap_lock.notify();
+        }
+        swapModule.setState(ModuleState.IDLE);
     }
 
     class RunClass implements Runnable{
@@ -118,11 +117,22 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
             while (true){
                 Values val = (Values)swapModule.recv();
                 execute(val);
+             //   if(swap_lock){// double if for too many swap_lock
+                    synchronized (swap_lock){
+                        if(swap_lock){
+                            try {
+                                swap_lock.wait();
+                            }catch (Exception e){
+                                LOG.error(e.getMessage());
+                            }
+                        }
+                    }
+              //  }
             }
         }
     }
 
     public void startRun(){
-        thread.start();
+        new Thread(runClass).start();
     }
 }

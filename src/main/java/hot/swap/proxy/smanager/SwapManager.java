@@ -17,23 +17,22 @@ import java.util.Map;
  */
 
 public class SwapManager{
-    private Map<String,SwapProxy> proxyMap = new HashMap<String, SwapProxy>();
-    private Map<String,String> module2Proxy = new HashMap<String, String>();
+    private Map<String,SwapProxy> module2Proxy;
 
     private MessageCenter messageCenter;
-    private QueueManager queueManager;
     private Logger LOG = LoggerFactory.getLogger(SwapManager.class);
     //to do??
-    public SwapManager(QueueManager queueManager, MessageCenter messageCenter){
+    public SwapManager(MessageCenter messageCenter){
         this.messageCenter = messageCenter;
-        this.queueManager = queueManager;
+        module2Proxy = new HashMap<String, SwapProxy>();
     }
 
     public void addProxy(String moduleName, SwapProxy proxy){
-        proxyMap.put(proxy.getProxyName(),proxy);
-        module2Proxy.put(moduleName,proxy.getProxyName());
+        module2Proxy.put(moduleName,proxy);
     }
 
+
+    // to do need synchronized ???
     public void swapModule(String oldId, String newId, String newModule) throws Exception{
         SwapProxy proxy = findProxyByTaskId(oldId);
         String proxyName = proxy.getProxyName();
@@ -46,19 +45,19 @@ public class SwapManager{
         if(res == Vote.NO){
             LOG.info("from Task(%s) to Task(%s) has failed!!",oldId,newId);
         }else{
-            handleChange(oldId,newId); // should be here safe transcatin??
-            module2Proxy.put(newModule,proxyName);
+            module2Proxy.put(newModule,proxy);
             module2Proxy.remove(oldId);
             LOG.info("from Task(%s) to Task(%s) has succeed!!",oldId,newId);
         }
     }
 
     public SwapProxy findProxyByTaskId(String taskId){
-        String proxyName = module2Proxy.get(taskId);
-        return proxyMap.get(proxyName);
+        return module2Proxy.get(taskId);
     }
 
-    public void handleChange(String oldId, String newId){
+    public void notifyMessageCenter(String oldId, String newId){
+        // proxy==modulename and do not change
+        // so do not need to call this method
         messageCenter.changeTask(oldId,newId);
     }
 }

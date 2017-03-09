@@ -1,23 +1,38 @@
 package hot.swap.proxy.testutil;
 
-import hot.swap.proxy.base.KryoValuesSerializer;
-import hot.swap.proxy.testutil.TestClass;
-
 /**
  * Created by leeshine on 3/9/17.
  */
 public class TestMain {
     public static void main(String[] args) throws Exception{
-        TestClass testClass = new TestClass();
-        testClass.add("abc");
-        testClass.add("def");
+        Boolean bs = false;
+        Tests ts = new Tests(bs);
+        Thread thread = new Thread(ts);
+        thread.start();
+        Thread.sleep(1000);
+        System.out.println("begin to notify");
+        synchronized (bs) {
+            System.out.println("daada");
+        }
+    }
 
-        KryoValuesSerializer valuesSerializer = new KryoValuesSerializer();
-        byte[] bs = valuesSerializer.serializeObject(testClass);
-
-
-        TestClass ls = (TestClass) valuesSerializer.deserializeObject(bs);
-        System.out.println(ls.get());
-        ls.test();
+    static class Tests implements Runnable{
+        private  Boolean bs;
+        public Tests(Boolean bs){
+            this.bs = bs;
+        }
+        public void run() {
+            while (true){
+                try {
+                    System.out.println("waiting");
+                    synchronized (bs) {
+                        Thread.sleep(10000);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                System.out.println("wake up");
+            }
+        }
     }
 }
