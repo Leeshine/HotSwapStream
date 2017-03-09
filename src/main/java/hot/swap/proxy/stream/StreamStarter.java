@@ -4,6 +4,7 @@ import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.message.MessageCenter;
 import hot.swap.proxy.message.QueueManager;
 import hot.swap.proxy.smanager.SwapManager;
+import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.SwapProxy;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class StreamStarter {
             component.init(queueManager,messageCenter);
 
             if(component.checkSwapable()){//swapable
-                SwapProxy swapProxy = new SwapProxy(component);
+                SwapProxy swapProxy = new SwapProxy((SwapModule)component);
                 swapProxy.startRun();
                 swapManager.addProxy(component.getId(),swapProxy);
             }else{

@@ -1,15 +1,17 @@
 package hot.swap.proxy.sproxy;
 
-import hot.swap.proxy.base.KryoValuesSerializer;
 import hot.swap.proxy.base.Values;
 import hot.swap.proxy.smodule.ModuleState;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
+import hot.swap.proxy.trnascation.Vote;
 import hot.swap.proxy.utils.BehaviorInterface;
+import hot.swap.proxy.utils.Pair;
+import hot.swap.proxy.utils.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Random;
+import java.lang.reflect.Constructor;
 
 /**
  * Created by leeshine on 3/6/17.
@@ -24,9 +26,8 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
 
     public SwapProxy(SwapModule module){
         this.swapModule = module;
-        Random random = new Random();
         swap_lock = false;
-        proxyName = String.valueOf(random.nextInt())+"_"+getModuleName();
+        proxyName = RandomUtil.RandomString(6);
         thread = new Thread(new RunClass());
     }
 
@@ -66,20 +67,50 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
         unblockCall();
     }
 
+    public Vote handleSwap(String newId, String className){
+        blockCall();
+        Vote res = swapTranscation(newId,className);
+        unblockCall();
+        return res;
+    }
+
+    public Vote swapTranscation(String newId, String className){
+        Pair<Vote,SwapModule> res = swapModule.prepareSwap();
+        if(res.getFirst() == Vote.NO){// prepare failed
+            rollBack();
+            LOG.info("swap transcation failed in prepared periord of Task : " + newId);
+            return Vote.NO;
+        }else{
+            try{
+                SwapModule newModule = commitTranscation(newId,className);
+                setNewModule(newModule);
+                return Vote.YES;
+            }catch (Exception e){
+                LOG.error(e.getMessage());
+                LOG.info("swap transcation failed in commit periord of Task : "+newId);
+                return Vote.NO;
+            }
+        }
+    }
+
+    public SwapModule commitTranscation(String newId, String className) throws Exception{
+        Class newClass = Class.forName(className);
+        Constructor constructor = newClass.getDeclaredConstructor(new Class[]{String.class});
+        constructor.setAccessible(true);
+
+        SwapModule newModule = (SwapModule)constructor.newInstance(new Object[]{newId});
+        return newModule;
+    }
+
+    public void rollBack() {
+        swapModule.setState(ModuleState.IDLE);
+    }
+
     private void blockCall(){
-    }
-
-    private void unblockCall(){
-    }
-
-    public void blockNewCall(){
         swapModule.setState(ModuleState.BLOCKED);
     }
 
-    public boolean checkModuleState(){
-    }
-
-    public void getInternalState(){
+    private void unblockCall(){
     }
 
     class RunClass implements Runnable{
@@ -93,9 +124,5 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
 
     public void startRun(){
         thread.start();
-    }
-
-    public void rollBack(SwapModule originModule){
-
     }
 }

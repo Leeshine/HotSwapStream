@@ -4,6 +4,9 @@ import hot.swap.proxy.message.MessageCenter;
 import hot.swap.proxy.message.QueueManager;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.SwapProxy;
+import hot.swap.proxy.trnascation.Vote;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -19,6 +22,7 @@ public class SwapManager{
 
     private MessageCenter messageCenter;
     private QueueManager queueManager;
+    private Logger LOG = LoggerFactory.getLogger(SwapManager.class);
     //to do??
     public SwapManager(QueueManager queueManager, MessageCenter messageCenter){
         this.messageCenter = messageCenter;
@@ -31,24 +35,27 @@ public class SwapManager{
     }
 
     public void swapModule(String oldId, String newId, String newModule) throws Exception{
-        String proxyName = module2Proxy.get(oldId);
-        SwapProxy proxy = proxyMap.get(proxyName);
+        SwapProxy proxy = findProxyByTaskId(oldId);
+        String proxyName = proxy.getProxyName();
 
         //time service
 
-        //SwapModule swapModule = (SwapModule) Class.forName(newModule).newInstance();
-        Class newClas = Class.forName(newModule);
-        Constructor constructor = newClas.getDeclaredConstructor(new Class[]{String.class});
-        constructor.setAccessible(true);
-        SwapModule swapModule = (SwapModule)constructor.newInstance(new Object[]{newId});
 
-        handleChange(oldId,newId);
-        swapModule.init(queueManager,messageCenter);
+        //proxy handle swap
+        Vote res = proxy.handleSwap(newId,newModule);
+        if(res == Vote.NO){
+            LOG.info("from Task(%s) to Task(%s) has failed!!",oldId,newId);
+        }else{
+            handleChange(oldId,newId); // should be here safe transcatin??
+            module2Proxy.put(newModule,proxyName);
+            module2Proxy.remove(oldId);
+            LOG.info("from Task(%s) to Task(%s) has succeed!!",oldId,newId);
+        }
+    }
 
-        module2Proxy.put(newModule,proxyName);
-        proxy.handleSwap(swapModule);
-        //proxy.setNewModule(swapModule);
-        //proxy.startRun(); ??new restart?
+    public SwapProxy findProxyByTaskId(String taskId){
+        String proxyName = module2Proxy.get(taskId);
+        return proxyMap.get(proxyName);
     }
 
     public void handleChange(String oldId, String newId){
