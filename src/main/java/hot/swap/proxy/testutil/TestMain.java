@@ -5,15 +5,17 @@ package hot.swap.proxy.testutil;
  */
 public class TestMain {
     public static void main(String[] args) throws Exception{
-        Boolean bs = false;
+       /* Boolean bs = false;
         Tests ts = new Tests(bs);
         Thread thread = new Thread(ts);
         thread.start();
         Thread.sleep(1000);
         System.out.println("begin to notify");
         synchronized (bs) {
-            System.out.println("daada");
-        }
+            bs.notify();
+        }*/
+        TestClass testClass = new TestClass();
+        testClass.test();
     }
 
     static class Tests implements Runnable{
@@ -25,7 +27,8 @@ public class TestMain {
             while (true){
                 try {
                     System.out.println("waiting");
-                    synchronized (bs) {
+                    synchronized (bs){
+                        //bs.wait();
                         Thread.sleep(10000);
                     }
                 }catch (Exception e){

@@ -76,12 +76,12 @@ public class SwapModule extends SComponent implements  SwapInterface,Cloneable{
     }
 
     public void checkState() throws Exception{
-        synchronized (state){
-           state.wait();
+        //synchronized (state){
+           //state.wait();
             if(state != ModuleState.BLOCKED)
                 throw new Exception("error state in prepared time");
             state = ModuleState.VOTING;
-        }
+       // }
     }
 
     public void setState(String moduleState){

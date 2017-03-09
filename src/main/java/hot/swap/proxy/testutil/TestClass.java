@@ -13,11 +13,13 @@ public class TestClass{
     private List<String> ls;
     private int pos;
     Values values;
+    private volatile Boolean bs;
 
     public TestClass(){
         ls = new ArrayList<String>();
         pos = -1;
         values = new Values("abc",123);
+        bs = false;
     }
 
     public void add(String str){
@@ -32,7 +34,10 @@ public class TestClass{
     }
 
     public void test(){
-        System.out.println(values.getInt(1));
+        System.out.println("dasdsa'");
+        synchronized (bs){
+            bs.notify();
+        }
     }
 
 }

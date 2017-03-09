@@ -14,6 +14,8 @@ import hot.swap.proxy.stream.StreamStarter;
 
 public class ClientMain {
     public static void main(String[] args) throws Exception {
+        System.setProperty("log4j.configuration","/home/leeshine/MasterPaper/HotSwapProxy/src/" +
+                "main/resources/log4j.properties");
         StreamBuilder builder = new StreamBuilder();
         GenerateModule generateModule = new GenerateModule("generate");
         //UpperModule upperModule = new UpperModule("upper");
@@ -26,8 +28,7 @@ public class ClientMain {
         builder.setModule(printModule).grouping(lowerModule.getId());
 
         SwapManager swapManager = StreamStarter.submitTopology(builder,"test");
-        Thread.sleep(2000);
-        System.out.println("begin swap");
+        Thread.sleep(100);
         swapManager.swapModule(lowerModule.getId(),"upper",UpperModule.class.getName());
     }
 }

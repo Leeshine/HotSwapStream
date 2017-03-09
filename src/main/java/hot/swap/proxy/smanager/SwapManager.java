@@ -1,14 +1,11 @@
 package hot.swap.proxy.smanager;
 
 import hot.swap.proxy.message.MessageCenter;
-import hot.swap.proxy.message.QueueManager;
-import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.SwapProxy;
 import hot.swap.proxy.trnascation.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,19 +32,18 @@ public class SwapManager{
     // to do need synchronized ???
     public void swapModule(String oldId, String newId, String newModule) throws Exception{
         SwapProxy proxy = findProxyByTaskId(oldId);
-        String proxyName = proxy.getProxyName();
-
         //time service
-
 
         //proxy handle swap
         Vote res = proxy.handleSwap(newId,newModule);
+        System.out.println(res);
         if(res == Vote.NO){
             LOG.info("from Task(%s) to Task(%s) has failed!!",oldId,newId);
         }else{
             module2Proxy.put(newModule,proxy);
             module2Proxy.remove(oldId);
-            LOG.info("from Task(%s) to Task(%s) has succeed!!",oldId,newId);
+            System.out.println("from Task "+oldId + " to " +newId + " succeed!");
+        //    LOG.info("from Task(%s) to Task(%s) has succeed!!",oldId,newId);
         }
     }
 
