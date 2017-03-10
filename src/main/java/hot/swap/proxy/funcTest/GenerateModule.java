@@ -26,7 +26,7 @@ public class GenerateModule extends NonSwapModule{
         Random random = new Random();
 
         public void run() {
-            while(true){
+            /*while(true){
                 String word = cadiates[random.nextInt(cadiates.length)];
                 send(new Values(word));
                 try{
@@ -34,6 +34,17 @@ public class GenerateModule extends NonSwapModule{
                 }catch (Exception e){
 
                 }
+            }*/
+            for(int i=0; i<1000; i++) {
+                String word = cadiates[random.nextInt(cadiates.length)];
+                if(i == 500){
+                    try{
+                        Thread.sleep(3000);
+                    }catch (Exception e){
+
+                    }
+                }
+                send(new Values(word));
             }
         }
     }

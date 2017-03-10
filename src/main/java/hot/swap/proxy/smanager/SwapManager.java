@@ -36,7 +36,6 @@ public class SwapManager{
 
         //proxy handle swap
         Vote res = proxy.handleSwap(newId,newModule);
-        System.out.println(res);
         if(res == Vote.NO){
             LOG.info("from Task(%s) to Task(%s) has failed!!",oldId,newId);
         }else{

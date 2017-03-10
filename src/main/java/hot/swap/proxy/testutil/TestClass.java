@@ -34,10 +34,14 @@ public class TestClass{
     }
 
     public void test(){
-        System.out.println("dasdsa'");
         synchronized (bs){
+            bs = true;
+        }
+        synchronized (bs){
+            bs = false;
             bs.notify();
         }
+        System.out.println("dasdsa");
     }
 
 }

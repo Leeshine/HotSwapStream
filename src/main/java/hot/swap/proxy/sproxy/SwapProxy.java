@@ -61,9 +61,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
     public Vote handleSwap(String newId, String className){ // swap entrance
         blockCall();
         Vote res = swapTranscation(newId,className);
-        System.out.println("quit transcation");
         unblockCall();
-        System.out.println("end in SwapProxy");
         return res;
     }
 
@@ -105,7 +103,7 @@ public class SwapProxy implements BehaviorInterface,SwapControlInterface {
 
     private void blockCall(){
         synchronized (swap_lock){
-            isBlocked = true;
+           isBlocked = true;
         }
         swapModule.setState(ModuleState.BLOCKED);
     }

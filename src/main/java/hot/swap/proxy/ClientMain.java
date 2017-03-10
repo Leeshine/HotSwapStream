@@ -28,7 +28,7 @@ public class ClientMain {
         builder.setModule(printModule).grouping(lowerModule.getId());
 
         SwapManager swapManager = StreamStarter.submitTopology(builder,"test");
-        Thread.sleep(100);
+        Thread.sleep(1000);
         swapManager.swapModule(lowerModule.getId(),"upper",UpperModule.class.getName());
     }
 }
