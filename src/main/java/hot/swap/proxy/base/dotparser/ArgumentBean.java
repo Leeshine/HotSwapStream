@@ -34,7 +34,7 @@ public abstract class ArgumentBean {
             return null;
     }
 
-    public void setValue(String name, String value){
+    public void addValue(String name, String value){
         if(!arg_values.containsKey(value)){
             arg_names.add(name);
         }

@@ -66,5 +66,6 @@ public class DotTest {
 
         t_DotParser.graph();
         AST result =  t_DotParser.getAST();
+        System.out.println(result.getFirstChild().getText());
     }
 }
