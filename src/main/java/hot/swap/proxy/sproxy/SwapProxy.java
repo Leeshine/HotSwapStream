@@ -5,7 +5,7 @@ import hot.swap.proxy.message.IConnection;
 import hot.swap.proxy.smodule.ModuleState;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.interfaceutil.SwapControlInterface;
-import hot.swap.proxy.trnascation.Vote;
+import hot.swap.proxy.transcation.Vote;
 import hot.swap.proxy.utils.BehaviorInterface;
 import hot.swap.proxy.utils.Pair;
 import org.slf4j.Logger;

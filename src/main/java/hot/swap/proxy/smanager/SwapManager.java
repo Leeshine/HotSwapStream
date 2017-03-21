@@ -2,7 +2,7 @@ package hot.swap.proxy.smanager;
 
 import hot.swap.proxy.message.MessageCenter;
 import hot.swap.proxy.sproxy.SwapProxy;
-import hot.swap.proxy.trnascation.Vote;
+import hot.swap.proxy.transcation.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
