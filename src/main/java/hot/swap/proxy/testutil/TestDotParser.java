@@ -1,14 +1,16 @@
-package hot.swap.proxy.base.dotgenerate;
+package hot.swap.proxy.testutil;
 
 import antlr.TokenBuffer;
 import antlr.collections.AST;
+import hot.swap.proxy.base.dotgenerate.DotLexer;
+import hot.swap.proxy.base.dotgenerate.DotParser;
 
 import java.io.StringBufferInputStream;
 
 /**
  * Created by leeshine on 3/21/17.
  */
-public class DotTest {
+public class TestDotParser {
     public static final String TEST_INPUT_1 =
             "digraph nlpMessagingGenerator {\n"
                     + "    overlap=scale;\n"

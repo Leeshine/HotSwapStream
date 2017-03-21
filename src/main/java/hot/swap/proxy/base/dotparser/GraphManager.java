@@ -23,7 +23,7 @@ public class GraphManager {
     private Graph graph;
 
     public GraphManager(String inputFile) throws FileNotFoundException{
-        InputStream stream = new FileInputStream(inputFile);
+         inputStream = new FileInputStream(inputFile);
         graph = new Graph();
     }
 
@@ -49,6 +49,8 @@ public class GraphManager {
                 case EDGE:
                     addEdge(cur_ast);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -73,13 +75,10 @@ public class GraphManager {
             result = name.getText();
         }
 
-        if(result == null)
-            throw new Exception("invalid or null topology name!");
-
         return result;
     }
 
-    public int getType(final AST ast) throws Exception{
+    public int getType(final AST ast){
         int type = -1;
         AST cur_ast = ast;
         if(cur_ast != null)
@@ -87,7 +86,7 @@ public class GraphManager {
 
         if(cur_ast != null){
             String value = cur_ast.getText();
-            if(cur_ast.getNextSibling()!= null && ("-->".equals(value))) {
+            if(cur_ast.getNextSibling()!=null && ("->".equals(value))) {
                 type = EDGE;
             }else{
                 if(cur_ast.getFirstChild() != null){
@@ -97,9 +96,6 @@ public class GraphManager {
                 }
             }
         }
-
-        if(type == -1)
-            throw  new Exception("invalid type!!");
 
         return type;
     }
@@ -136,7 +132,10 @@ public class GraphManager {
 
         AST cur_ast = ast.getFirstChild();
         while(cur_ast != null){
-            node.addValue(cur_ast.getText(),getASTName(cur_ast));
+            String name = cur_ast.getText();
+            String value = getASTName(cur_ast);
+            if(name!=null && value!=null)
+                node.addValue(name,value);
             cur_ast = cur_ast.getNextSibling();
         }
     }

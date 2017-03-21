@@ -49,4 +49,15 @@ public class Graph extends ArgumentBean {
         Node node = new Node(node_name);
         nodeMap.put(node_name,node);
     }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(graph_name);
+        sb.append(":\n");
+        sb.append(nodeMap.toString());
+        sb.append("\n");
+        sb.append(edges.toString());
+        sb.append("\n");
+        return sb.toString();
+    }
 }

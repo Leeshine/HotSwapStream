@@ -1,0 +1,9 @@
+digraph test{
+    A[style="dashed"];
+    B[style="dashed"];
+    C[style="dashed"];
+    D[style="dashed"];
+    A -> B;
+    B -> C;
+    D -> C;
+}
