@@ -20,14 +20,14 @@ public class GraphManager {
     private static final int EDGE = 3;
 
     private InputStream inputStream;
-    private Graph graph;
+    private TopologyGraph graph;
 
     public GraphManager(String inputFile) throws FileNotFoundException{
          inputStream = new FileInputStream(inputFile);
-        graph = new Graph();
+        graph = new TopologyGraph();
     }
 
-    public Graph parserGraph() throws Exception{
+    public TopologyGraph parserGraph() throws Exception{
         AST ast = buildAST();
 
         graph.setGraph_name(getASTName(ast));

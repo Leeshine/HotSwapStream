@@ -1,10 +1,13 @@
 package hot.swap.proxy;
 
+import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.funcTest.GenerateModule;
 import hot.swap.proxy.funcTest.LowerModule;
 import hot.swap.proxy.funcTest.PrintModule;
 import hot.swap.proxy.funcTest.UpperModule;
+import hot.swap.proxy.nonswapmodule.NonSwapModule;
 import hot.swap.proxy.smanager.SwapManager;
+import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.stream.StreamBuilder;
 import hot.swap.proxy.stream.StreamStarter;
 
@@ -16,8 +19,9 @@ public class ClientMain {
     public static void main(String[] args) throws Exception {
         System.setProperty("log4j.configuration","/home/leeshine/MasterPaper/HotSwapProxy/src/" +
                 "main/resources/log4j.properties");
-        StreamBuilder builder = new StreamBuilder();
-        GenerateModule generateModule = new GenerateModule("generate");
+        StreamBuilder builder = new StreamBuilder("test");
+        SComponent generateModule = new GenerateModule("generate");
+        System.out.println(generateModule instanceof SwapModule);
         //UpperModule upperModule = new UpperModule("upper");
         LowerModule lowerModule = new LowerModule("lower");
         PrintModule printModule = new PrintModule("print");
@@ -27,8 +31,8 @@ public class ClientMain {
         //builder.setModule(lowerModule).grouping(generateModule.getId());
         builder.setModule(printModule).grouping(lowerModule.getId());
 
-        SwapManager swapManager = StreamStarter.submitTopology(builder,"test");
+        /*SwapManager swapManager = StreamStarter.submitTopology(builder,"test");
         Thread.sleep(1000);
-        swapManager.swapModule(lowerModule.getId(),"upper",UpperModule.class.getName());
+        swapManager.swapModule(lowerModule.getId(),"upper",UpperModule.class.getName());*/
     }
 }

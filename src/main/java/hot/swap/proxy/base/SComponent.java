@@ -18,7 +18,15 @@ public abstract class SComponent implements BehaviorInterface{
     public SComponent(){
     }
 
-    public SComponent(String _id, Boolean swapable){
+    public void setId(String _id){
+        this.id = _id;
+    }
+
+    public void setSwapable(boolean swapable){
+        this.Swapable = swapable;
+    }
+
+    public SComponent(String _id, boolean swapable){
         this.id = _id;
         Swapable = swapable;
     }

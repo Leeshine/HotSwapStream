@@ -11,18 +11,34 @@ import java.util.Map;
  */
 
 public class StreamBuilder {
-    private Map<String,SComponent> componentMap = new HashMap<String, SComponent>();
-    private Map<String,List<String>> inputList = new HashMap<String, List<String>>();
+    private String topologyName;
+    private Map<String,SComponent> componentMap;
+    private Map<String,List<String>> inputList;
+    private Map<String,ComponentDeclarer> declarerMap;
+
+    public StreamBuilder(String name){
+        topologyName = name;
+        componentMap = new HashMap<String, SComponent>();
+        inputList = new HashMap<String, List<String>>();
+        declarerMap = new HashMap<String, ComponentDeclarer>();
+    }
 
     public ComponentDeclarer setModule(SComponent component){
         String id = component.getId();
-        checkComponentId(id);
+        checkComponentId(id,component);
         componentMap.put(id,component);
 
-        return  new ComponentDeclarer(id);
+        ComponentDeclarer declarer = new ComponentDeclarer(id);
+        declarerMap.put(id,declarer);
+        return declarer;
     }
 
-    public void checkComponentId(String id){
+    public void addGrouping(String srcComponentId, String dstComponentId){
+        declarerMap.get(dstComponentId).grouping(srcComponentId);
+    }
+
+
+    public void checkComponentId(String id,SComponent component){
         if(componentMap.containsKey(id))
             throw new IllegalArgumentException("component has been already declared for id: " + id);
     }
@@ -51,6 +67,14 @@ public class StreamBuilder {
 
     public Map<String,List<String>> getInputList(){
         return inputList;
+    }
+
+    public void setTopologyName(String name){
+        topologyName = name;
+    }
+
+    public String getTopologyName(){
+        return topologyName;
     }
 
 }

@@ -1,6 +1,6 @@
 package hot.swap.proxy.testutil;
 
-import hot.swap.proxy.base.dotparser.Graph;
+import hot.swap.proxy.base.dotparser.TopologyGraph;
 import hot.swap.proxy.base.dotparser.GraphManager;
 
 /**
@@ -11,7 +11,7 @@ public class TestGraphParser {
         String inputFile = "/home/leeshine/MasterPaper/HotSwapProxy" +
                 "/src/main/java/hot/swap/proxy/testutil/testgraph.dot";
         GraphManager manager = new GraphManager(inputFile);
-        Graph graph = manager.parserGraph();
+        TopologyGraph graph = manager.parserGraph();
 
         System.out.println(graph);
     }

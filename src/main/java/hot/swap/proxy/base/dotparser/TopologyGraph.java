@@ -1,27 +1,24 @@
 package hot.swap.proxy.base.dotparser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by leeshine on 3/20/17.
  */
 
-public class Graph extends ArgumentBean {
+public class TopologyGraph extends ArgumentBean {
     //private List<Node> nodes;
     private List<Edge> edges;
     private String graph_name;
 
     private Map<String,Node> nodeMap;
 
-    public Graph(){
+    public TopologyGraph(){
         edges = new ArrayList<Edge>();
         nodeMap = new HashMap<String, Node>();
     }
 
-    public Graph(String name){
+    public TopologyGraph(String name){
         edges = new ArrayList<Edge>();
         nodeMap = new HashMap<String, Node>();
         graph_name = name;
@@ -29,6 +26,10 @@ public class Graph extends ArgumentBean {
 
     public void setGraph_name(String name){
         this.graph_name = name;
+    }
+
+    public String getGraph_name(){
+        return  graph_name;
     }
 
     public Node getAndaddNode(String node_name){
@@ -59,5 +60,13 @@ public class Graph extends ArgumentBean {
         sb.append(edges.toString());
         sb.append("\n");
         return sb.toString();
+    }
+
+    public Collection<Node> getNode(){
+        return nodeMap.values();
+    }
+
+    public List<Edge> getEdges(){
+        return edges;
     }
 }
