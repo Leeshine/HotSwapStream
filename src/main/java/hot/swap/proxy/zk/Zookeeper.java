@@ -24,8 +24,8 @@ import java.util.Map;
  * Created by leeshine on 4/1/17.
  */
 
-public class zookeeper {
-    private static Logger LOG = LoggerFactory.getLogger(zookeeper.class);
+public class Zookeeper {
+    private static Logger LOG = LoggerFactory.getLogger(Zookeeper.class);
 
     public CuratorFramework mkClient(Map conf, List<String> servers, Integer port, String root) {
         return mkClient(conf, servers, port, root, new DefaultWatcherCallBack());
@@ -47,7 +47,6 @@ public class zookeeper {
 
                     watcher.execute(event.getState(), event.getType(), event.getPath());
                 }
-
             }
         });
 

@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import hot.swap.proxy.stream.nimbus.NimbusServer;
+import hot.swap.proxy.stream.nimbus.ServiceHandler;
+import hot.swap.proxy.stream.topserver.TopologyServer;
 import hot.swap.proxy.utils.PathUtils;
 import hot.swap.proxy.zk.Factory;
 import org.slf4j.Logger;
@@ -42,6 +45,8 @@ public class LocalClusterMap {
     private List<String> tmpDir;
 
     private SupervisorManger supervisor;
+
+    private TopologyServer topologyServer;
 
     public ServiceHandler getNimbus() {
         return nimbus;
@@ -81,6 +86,14 @@ public class LocalClusterMap {
 
     public void setSupervisor(SupervisorManger supervisor) {
         this.supervisor = supervisor;
+    }
+
+    public TopologyServer getTopologyServer(){
+        return topologyServer;
+    }
+
+    public void setTopologyServer(TopologyServer topologyServer){
+        this.topologyServer = topologyServer;
     }
 
     public List<String> getTmpDir() {

@@ -5,9 +5,11 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by leeshine on 4/1/17.
@@ -52,4 +54,17 @@ public class Utils {
         }
         return byteArray;
     }
+
+    public static Properties getProperties(String file){
+        Properties prop = new Properties();
+        InputStream ins = Utils.class.getClassLoader().getResourceAsStream(file);
+        try{
+            prop.load(ins);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return prop;
+    }
+
+
 }
