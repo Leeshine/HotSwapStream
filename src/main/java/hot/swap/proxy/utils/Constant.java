@@ -12,6 +12,7 @@ public class Constant {
     public static final int zk_session;
     public static final int zk_connection;
     public static final String local_tmpdir;
+    public static final String zk_root;
 
     static{
         Properties prop = Utils.getProperties(PROP_FILE);
@@ -20,11 +21,15 @@ public class Constant {
         nm_tmpDir = prop.getProperty("nimbus.tmpdir");
         zk_session = Integer.parseInt(prop.getProperty("zookeeper.session.timeout","5000"));
         zk_connection = Integer.parseInt(prop.getProperty("zookeeper.connection.timeout","3000"));
+        zk_root = prop.getProperty("zk.root","/storm");
     }
 
     public static final String STORM_LOCAL_DIR="storm.local.dir";
     public static final String STORM_CLUSTER_MODE = "storm.cluster.mode";
     public static final String LOCAL_MODE = "local";
     public static final String DISTRIBUTED_MODE = "distributed";
+    public static final String STORM_ZOOKEEPER_SERVERS = "storm.zookeeper.server";
+    public static final String STORM_ZOOKEEPER_PORT = "storm.zookeeper.port";
+    public static final String STORM_ZOOKEEPER_ROOT = "storm.zookeeper.root";
 
 }

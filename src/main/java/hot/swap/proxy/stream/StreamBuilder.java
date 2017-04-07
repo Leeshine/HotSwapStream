@@ -73,6 +73,13 @@ public class StreamBuilder {
         topologyName = name;
     }
 
+    public Topology createTopology(){
+        Topology topology = new Topology(topologyName);
+
+        return topology;
+    }
+
+
     public String getTopologyName(){
         return topologyName;
     }
