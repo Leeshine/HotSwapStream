@@ -1,11 +1,13 @@
 package hot.swap.proxy.utils;
 
 import com.sun.deploy.util.StringUtils;
+import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,5 +68,71 @@ public class Utils {
         return prop;
     }
 
+    public static byte[] serialize(Object obj){
+        return javaSerialize(obj);
+    }
+
+    public static byte[] javaSerialize(Object obj){
+        if(obj instanceof  byte[]){
+            return (byte[])obj;
+        }
+
+        try{
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.close();
+            return bos.toByteArray();
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object deserialize(byte[] serialized){
+        return javaDeserialize(serialized);
+    }
+
+    public static Object javaDeserialize(byte[] serialized){
+        Object res = null;
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serialized);
+            ObjectInput ois = new ObjectInputStream(bis);
+            res = ois.readObject();
+            ois.close();
+        }catch (IOException ioe){
+            throw new RuntimeException(ioe);
+        }catch (ClassNotFoundException classe){
+            throw new RuntimeException(classe);
+        }
+        return res;
+    }
+
+    /*public static <T> T deserialize(byte[] serialized, Class<T> clazz){
+    }
+
+    public static Object javaDeserialize(byte[] serialized){
+        return javaDeserializeWithClassLoader(serialized,)
+    }
+
+    public static Object javaDeserializeWithClassLoader(byte[] serialized, URLClassLoader loader){
+        try{
+            ByteArrayInputStream bis = new ByteArrayInputStream(serialized);
+            Object res = null;
+            if(loader != null){
+                ClassLoaderObjectInputStream cis = new ClassLoaderObjectInputStream(loader,bis);
+                res = cis.readObject();
+                cis.close();
+            }else{
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                res = ois.readObject();
+                ois.close();
+            }
+            return res;
+        }catch (IOException ioe){
+            throw new RuntimeException(ioe);
+        }catch (ClassNotFoundException cfe){
+            throw new RuntimeException(cfe);
+        }
+    }*/
 
 }

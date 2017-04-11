@@ -16,10 +16,11 @@ import java.util.Map;
 
 /**
  * Created by leeshine on 4/6/17.
+ * all zk interface
  */
 
 public class ZookeeperCluster {
-    private Logger LOG = LoggerFactory.getLogger(ZookeeperCluster.class);
+    private static Logger LOG = LoggerFactory.getLogger(ZookeeperCluster.class);
 
     private Zookeeper zkobj = new Zookeeper();
     private CuratorFramework zk;
@@ -39,7 +40,6 @@ public class ZookeeperCluster {
 
         watcher = new WatcherCallBack() {
             public void execute(Watcher.Event.KeeperState state, Watcher.Event.EventType type, String path) {
-
             }
         };
 
@@ -86,5 +86,14 @@ public class ZookeeperCluster {
 
     public boolean node_existed(String path, boolean watch) throws Exception {
         return zkobj.exists(zk,path,watch);
+    }
+
+    public void set_ephemeral_node(String path, byte[] data) throws Exception{
+        zkobj.mkdirs(zk,PathUtils.parent_path(path));
+        if(zkobj.exists(zk,path,false)){
+            zkobj.setData(zk,path,data);
+        }else{
+            zkobj.createNode(zk,path,data,CreateMode.EPHEMERAL);
+        }
     }
 }
