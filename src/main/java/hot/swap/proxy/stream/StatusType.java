@@ -1,5 +1,7 @@
 package hot.swap.proxy.stream;
 
+import java.io.Serializable;
+
 /**
  * Created by leeshine on 4/6/17.
  */

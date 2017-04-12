@@ -13,5 +13,7 @@ public class Config extends HashMap<String,Object>{
     public static final String STORM_ZOOKEEPER_SERVERS = "storm.zookeeper.server";
     public static final String STORM_ZOOKEEPER_PORT = "storm.zookeeper.port";
     public static final String STORM_ZOOKEEPER_ROOT = "storm.zookeeper.root";
+    public static final String WORKER_JAR_LOCATION = "worker.jar.localtion";
+    public static final String WORKER_TOPOLOGY_NAME = "worker.topology.name";
 
 }

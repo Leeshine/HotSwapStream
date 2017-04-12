@@ -5,5 +5,6 @@ package hot.swap.proxy.stream.nimbus;
  */
 public class NimbusServer {
     public ServiceHandler launcherLocalServer() throws Exception{
+        return null;
     }
 }

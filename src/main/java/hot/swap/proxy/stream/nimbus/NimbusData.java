@@ -1,5 +1,7 @@
 package hot.swap.proxy.stream.nimbus;
 
+import hot.swap.proxy.cluster.Cluster;
+import hot.swap.proxy.cluster.HuskaZkCluster;
 import hot.swap.proxy.cluster.ZookeeperCluster;
 import hot.swap.proxy.utils.ConfigUtil;
 import hot.swap.proxy.utils.RotatingMap;
@@ -20,7 +22,7 @@ public class NimbusData {
 
     private RotatingMap<String,Object> pendingSubmitTopology;
 
-    private ZookeeperCluster zkCluster;
+    private HuskaZkCluster huskaZkCluster;
 
     public NimbusData(Map conf) throws Exception{
         this.conf = conf;
@@ -28,6 +30,8 @@ public class NimbusData {
         localMode = ConfigUtil.local_mode(conf);
 
         pendingSubmitTopology = new RotatingMap<String, Object>(null);
+
+        huskaZkCluster = Cluster.mk_huska_cluster_satte(conf);
     }
 
     public Map<Object,Object> getConf(){
@@ -40,5 +44,9 @@ public class NimbusData {
 
     public boolean isLocalMode(){
         return localMode;
+    }
+
+    public HuskaZkCluster getHuskaZkCluster(){
+        return huskaZkCluster;
     }
 }

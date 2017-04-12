@@ -1,5 +1,6 @@
 package hot.swap.proxy.base.dotparser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by leeshine on 3/20/17.
  */
 
-public abstract class ArgumentBean {
+public abstract class ArgumentBean{
     private List<String> arg_names;
     private Map<String,String> arg_values;
 
@@ -30,8 +31,8 @@ public abstract class ArgumentBean {
         if(arg_values.containsKey(name)){
             return arg_values.get(name);
         }
-        else
-            return null;
+
+        return null;
     }
 
     public void addValue(String name, String value){

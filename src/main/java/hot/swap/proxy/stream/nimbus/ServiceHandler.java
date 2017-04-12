@@ -20,8 +20,7 @@ public class ServiceHandler {
         this.conf = data.getConf();
     }
 
-    public void shutdow(){
-
+    public void shutdown(){
     }
 
     public void submitTopology(StreamBuilder builder, Map conf) throws Exception{
@@ -36,7 +35,6 @@ public class ServiceHandler {
         }
 
         try{
-
             //local
 
             //zookeeper

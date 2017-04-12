@@ -1,6 +1,8 @@
 package hot.swap.proxy.cluster;
 
+import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.stream.StreamBuilder;
+import hot.swap.proxy.stream.Topology;
 import hot.swap.proxy.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,22 @@ public class HuskaZkCluster {
         }
     }
 
-    public void disconnect(){
+    public Topology getTopology(String topologyName) throws Exception{
+        String path = Cluster.topology_path(topologyName);
+        Object obj = getObject(path,false);
+        return (Topology)obj;
+    }
+
+    /*public String getJarLocation(String component_class_name) throws Exception{
+    }*/
+
+    public SComponent getSComponentByClassName(String component_class_name) throws Exception{
+        String path = Cluster.plugin_path(component_class_name);
+        Object obj = getObject(path,false);
+        return (SComponent)obj;
+    }
+
+    public void close(){
         cluster.close();
     }
 
