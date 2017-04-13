@@ -17,10 +17,12 @@ public class Cluster {
     public static final String PLUGINS_ROOT = "plugin";
     public static final String TOPOLOGYS_ROOT = "topology";
     public static final String TASK_ROOT = "task";
+    public static final String DYNAMIC_ROOT = "dynamic";
 
-    public static String PLUGINS_SUBTREE = ZK_SEPRATOR + PLUGINS_ROOT;
-    public static String TOPOLOGYS_SUBTREE = ZK_SEPRATOR + TOPOLOGYS_ROOT;
-    public static String TASK_SUBTREE = ZK_SEPRATOR + TASK_ROOT;
+    public static final String PLUGINS_SUBTREE = ZK_SEPRATOR + PLUGINS_ROOT;
+    public static final String TOPOLOGYS_SUBTREE = ZK_SEPRATOR + TOPOLOGYS_ROOT;
+    public static final String TASK_SUBTREE = ZK_SEPRATOR + TASK_ROOT;
+    public static final String DYNAMIC_SUBTREE = ZK_SEPRATOR + DYNAMIC_ROOT;
 
     public static String plugin_path(String id){
         return PLUGINS_SUBTREE + ZK_SEPRATOR + id;
@@ -30,6 +32,10 @@ public class Cluster {
         return TOPOLOGYS_SUBTREE + ZK_SEPRATOR + id;
     }
 
+    public static String dynamic_path(String id){
+        return DYNAMIC_SUBTREE + ZK_SEPRATOR + id;
+    }
+
     public static String task_path(String id){
         return TASK_SUBTREE + ZK_SEPRATOR + id;
     }
@@ -37,5 +43,4 @@ public class Cluster {
     public static HuskaZkCluster mk_huska_cluster_state(Map cluster_state_spec) throws Exception{
         return new HuskaZkCluster(cluster_state_spec);
     }
-
 }

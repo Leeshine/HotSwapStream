@@ -19,13 +19,15 @@ public class Topology implements Serializable{
     private Map<String,Integer> componentIndex;
     private int index = 0;
 
-    public Topology(){
+    public Topology(TopologyGraph graph){
         componentNames = new ArrayList<String>();
         componentIndex = new HashMap<String, Integer>();
+
+        initWithGraph(graph);
     }
 
 
-    public void parserGraph(TopologyGraph graph){
+    private void initWithGraph(TopologyGraph graph){
         topologyName = graph.getGraph_name();
         Collection<Node> nodes = graph.getNode();
         for(Node node: nodes){ // class_name ?? node_name
@@ -69,6 +71,24 @@ public class Topology implements Serializable{
         }
 
         return inputList;
+    }
+
+    public List<String> getNodeInputList(String component_class_name){
+        List<String> list = new ArrayList<String>();
+        int in = componentIndex.get(component_class_name);
+        for(int j=0; j<index; ++j){
+            if(componentMatrix[in][j] == 1)
+                list.add(componentNames.get(j));
+        }
+
+        return list;
+    }
+
+    public boolean existEdge(String src_component, String dst_component){
+        int in1 = componentIndex.get(src_component);
+        int in2 = componentIndex.get(dst_component);
+
+        return componentMatrix[in1][in2] == 1;
     }
 
     public String getTopologyName() {

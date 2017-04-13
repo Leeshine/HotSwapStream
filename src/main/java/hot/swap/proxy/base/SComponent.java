@@ -6,16 +6,21 @@ import hot.swap.proxy.message.MessageCenter;
 import hot.swap.proxy.message.QueueManager;
 import hot.swap.proxy.utils.BehaviorInterface;
 
+import java.io.Serializable;
+
 /**
  * Created by leeshine on 3/7/17.
  */
 
-public abstract class SComponent implements BehaviorInterface{
-    private IConnection connection;
+public abstract class SComponent implements BehaviorInterface,Serializable{
+    private transient IConnection connection;
     private String id; // swapmodule's id only for swap , replaced by proxy's id otherwise
     private boolean Swapable;
 
     public SComponent(){
+    }
+
+    public void prepare(){// init after deserialize
     }
 
     public void setId(String _id){

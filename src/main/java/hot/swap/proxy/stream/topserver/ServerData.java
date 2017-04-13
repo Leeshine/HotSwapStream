@@ -16,4 +16,11 @@ public class ServerData {
         this.conf = conf;
     }
 
+    public Map<Object,Object> getConf(){
+        return conf;
+    }
+
+    public void setHuskaZkCluster(HuskaZkCluster huskaZkCluster) {
+        this.huskaZkCluster = huskaZkCluster;
+    }
 }

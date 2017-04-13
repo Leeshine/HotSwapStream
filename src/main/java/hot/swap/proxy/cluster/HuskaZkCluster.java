@@ -35,6 +35,14 @@ public class HuskaZkCluster {
         cluster.addListener(listener);
     }
 
+    private boolean exits(String path) throws Exception{
+        return cluster.node_existed(path,false);
+    }
+
+    public void create_node(String path) throws Exception{
+        cluster.mkdirs(path);
+    }
+
     public Object getObject(String path, boolean callback) throws Exception{
         byte[] data = cluster.get_data(path,callback);
         return Utils.deserialize(data);
@@ -68,12 +76,6 @@ public class HuskaZkCluster {
         }
     }
 
-    public Topology getTopology(String topologyName) throws Exception{
-        String path = Cluster.topology_path(topologyName);
-        Object obj = getObject(path,false);
-        return (Topology)obj;
-    }
-
     /*public String getJarLocation(String component_class_name) throws Exception{
     }*/
 
@@ -81,6 +83,34 @@ public class HuskaZkCluster {
         String path = Cluster.plugin_path(component_class_name);
         Object obj = getObject(path,false);
         return (SComponent)obj;
+    }
+
+    public boolean SComponentExist(String component_class_name) throws Exception{
+        String path = Cluster.plugin_path(component_class_name);
+        return exits(path);
+    }
+
+    public void addSComponent(String component_class_name, SComponent component) throws Exception{
+        String path = Cluster.plugin_path(component_class_name);
+        setObject(path,component);
+    }
+
+    public Topology getTopology(String topologyName) throws Exception{
+        String path = Cluster.topology_path(topologyName);
+        Object obj = getObject(path,false);
+        return (Topology)obj;
+    }
+
+    public boolean topologyExist(String topology_name) throws Exception{
+        String path  = Cluster.topology_path(topology_name);
+        return exits(path);
+    }
+
+
+    public void addTopology(Topology topology) throws Exception{
+        String name = topology.getTopologyName();
+        String path = Cluster.topology_path(name);
+        setObject(path,topology);
     }
 
     public void close(){

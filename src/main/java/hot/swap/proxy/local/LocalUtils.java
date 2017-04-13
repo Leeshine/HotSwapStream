@@ -82,11 +82,11 @@ public class LocalUtils {
 
     }
 
-    public static SupervisorData makeSupervisorData(){
+    public static SupervisorData makeSupervisorData(Map conf){
 
     }
 
-    public static ServerData makeServerData(){
+    public static ServerData makeServerData(Map conf){
 
     }
 
