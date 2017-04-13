@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import hot.swap.proxy.stream.nimbus.NimbusServer;
 import hot.swap.proxy.stream.nimbus.ServiceHandler;
+import hot.swap.proxy.stream.supervisor.Supervisor;
 import hot.swap.proxy.stream.topserver.TopologyServer;
 import hot.swap.proxy.utils.PathUtils;
 import hot.swap.proxy.zk.Factory;
@@ -34,8 +34,6 @@ public class LocalClusterMap {
 
     public static Logger LOG = LoggerFactory.getLogger(LocalClusterMap.class);
 
-    private NimbusServer nimbusServer;
-
     private ServiceHandler nimbus;
 
     private Factory zookeeper;
@@ -44,7 +42,7 @@ public class LocalClusterMap {
 
     private List<String> tmpDir;
 
-    private SupervisorManger supervisor;
+    private Supervisor supervisor;
 
     private TopologyServer topologyServer;
 
@@ -72,21 +70,6 @@ public class LocalClusterMap {
         this.conf = conf;
     }
 
-    public NimbusServer getNimbusServer() {
-        return nimbusServer;
-    }
-
-    public void setNimbusServer(NimbusServer nimbusServer) {
-        this.nimbusServer = nimbusServer;
-    }
-
-    public SupervisorManger getSupervisor() {
-        return supervisor;
-    }
-
-    public void setSupervisor(SupervisorManger supervisor) {
-        this.supervisor = supervisor;
-    }
 
     public TopologyServer getTopologyServer(){
         return topologyServer;
@@ -104,15 +87,22 @@ public class LocalClusterMap {
         this.tmpDir = tmpDir;
     }
 
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+
     public void clean() {
 
         if (supervisor != null) {
-            supervisor.ShutdownAllWorkers();
             supervisor.shutdown();
         }
 
-        if (nimbusServer != null) {
-            nimbusServer.cleanup();
+        if (nimbus != null) {
+            nimbus.shutdown();
         }
 
         if (zookeeper != null)

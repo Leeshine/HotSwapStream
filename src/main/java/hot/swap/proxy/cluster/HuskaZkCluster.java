@@ -4,6 +4,9 @@ import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.stream.StreamBuilder;
 import hot.swap.proxy.stream.Topology;
 import hot.swap.proxy.utils.Utils;
+import hot.swap.proxy.zk.WatcherCallBack;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,14 @@ public class HuskaZkCluster {
     public HuskaZkCluster(Map<Object,Object> conf) throws Exception{
         this.conf = conf;
         cluster = new ZookeeperCluster(conf);
+    }
+
+    public CuratorFramework getClient(){
+        return cluster.getClient();
+    }
+
+    public void addListener(CuratorListener listener){
+        cluster.addListener(listener);
     }
 
     public Object getObject(String path, boolean callback) throws Exception{

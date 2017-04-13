@@ -1,11 +1,14 @@
 package hot.swap.proxy.cluster;
 
-import hot.swap.proxy.Config;
+import hot.swap.proxy.base.Config;
 import hot.swap.proxy.utils.Constant;
 import hot.swap.proxy.utils.PathUtils;
+import hot.swap.proxy.zk.DefaultWatcherCallBack;
 import hot.swap.proxy.zk.WatcherCallBack;
 import hot.swap.proxy.zk.Zookeeper;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorEvent;
+import org.apache.curator.framework.api.CuratorListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
@@ -24,11 +27,10 @@ public class ZookeeperCluster {
 
     private Zookeeper zkobj = new Zookeeper();
     private CuratorFramework zk;
-    private WatcherCallBack watcher;
 
     private Map<Object,Object> conf;
 
-    public ZookeeperCluster(Map<Object,Object> conf) throws Exception{
+    public ZookeeperCluster(Map<Object,Object> conf,WatcherCallBack watcherCallBack) throws Exception{
         this.conf = conf;
 
         CuratorFramework _zk = mkZk();
@@ -38,13 +40,20 @@ public class ZookeeperCluster {
         zkobj.mkdirs(_zk,path);
         _zk.close();
 
-        watcher = new WatcherCallBack() {
-            public void execute(Watcher.Event.KeeperState state, Watcher.Event.EventType type, String path) {
-            }
-        };
-
         zk = null;
-        zk = mkZk(watcher);
+        zk = mkZk(watcherCallBack);
+    }
+
+    public CuratorFramework getClient(){
+        return  zk;
+    }
+
+    public ZookeeperCluster(Map<Object,Object> conf) throws Exception{
+        this(conf,new DefaultWatcherCallBack());
+    }
+
+    public void addListener(CuratorListener listener){
+        zk.getCuratorListenable().addListener(listener);
     }
 
     public CuratorFramework mkZk(){

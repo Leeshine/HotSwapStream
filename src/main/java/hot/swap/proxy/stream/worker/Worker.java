@@ -1,6 +1,5 @@
 package hot.swap.proxy.stream.worker;
 
-import hot.swap.proxy.Config;
 import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.Shutdown;
 import hot.swap.proxy.cluster.HuskaZkCluster;
@@ -12,7 +11,6 @@ import hot.swap.proxy.smanager.SwapManager;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.SwapProxy;
 import hot.swap.proxy.stream.Topology;
-import hot.swap.proxy.utils.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,27 +36,23 @@ public class Worker implements Runnable,Shutdown{
     private Map<String,SComponent> componentMap;
     private SwapManager swapManager;
 
-    public Worker(Map conf, WorkerData workerData){
-        this.conf = conf;
+    public Worker(WorkerData workerData) throws Exception{
+        this.conf = workerData.getConf();
         this.workerData = workerData;
-        this.huskaZkCluster = workerData.getHuskaZkCluster();
+        //this.huskaZkCluster = workerData.getHuskaZkCluster();
         this.componentMap = new HashMap<String, SComponent>();
 
-        topologyName = (String)conf.get(Config.WORKER_TOPOLOGY_NAME);
-        Topology topology = getTopology();
-        init(topology);
+        initZK();
 
-        thread = new Thread(this);
-        workerName = "worker_"+RandomUtil.RandomString(3);
-        thread.setName(workerName);
-        thread.start();
     }
 
     public SwapManager getSwapManager(){
         return swapManager;
     }
 
-    private void init(Topology topology){
+    public void startNewTopology(Topology topology){
+        this.topologyName = topology.getTopologyName();
+
         List<String> class_names = topology.getComponentNames();
         try {
             for (String class_name : class_names) {
@@ -94,14 +88,38 @@ public class Worker implements Runnable,Shutdown{
                 component.startRun();
             }
         }
+
+        ///???
+        /*thread = new Thread(this);
+        workerName = "worker_"+RandomUtil.RandomString(3);
+        thread.setName(workerName);
+        thread.start();*/
     }
 
+    public void updateCurrentTopology(Topology topology){
+
+    }
+
+    public void stopCurrentTopology(){
+
+    }
+
+    private void initZK() throws Exception{
+        try {
+            huskaZkCluster = new HuskaZkCluster(conf);
+        }catch (Exception e){
+            LOG.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+
+        workerData.setHuskaZkCluster(huskaZkCluster);
+    }
 
     public String getWorkerName(){
         return workerName;
     }
 
-    public Topology getTopology(){
+    private Topology getTopology(){
         Topology topology = null;
         try{
             topology = huskaZkCluster.getTopology(topologyName);

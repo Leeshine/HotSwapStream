@@ -1,5 +1,7 @@
 package hot.swap.proxy.local;
 
+import hot.swap.proxy.base.SComponent;
+import hot.swap.proxy.base.Shutdown;
 import hot.swap.proxy.stream.StreamBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,7 @@ import java.util.Map;
 /**
  * Created by leeshine on 4/5/17.
  */
-public class LocalCluster implements ILocalCluster{
+public class LocalCluster implements ILocalCluster,Shutdown{
     private static final Logger LOG = LoggerFactory.getLogger(LocalCluster.class);
 
     private LocalClusterMap state;
@@ -41,5 +43,19 @@ public class LocalCluster implements ILocalCluster{
     }
 
     public void killTopology(String topologyName){
+    }
+
+    public void installPlugin(SComponent component){
+    }
+
+    public void unintstallPlugin(String class_name){
+
+    }
+
+    public void updatePlugin(SComponent component){
+
+    }
+
+    public void shutdown() {
     }
 }

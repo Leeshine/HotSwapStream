@@ -5,6 +5,8 @@ import hot.swap.proxy.cluster.HuskaZkCluster;
 import hot.swap.proxy.message.MessageCenter;
 import hot.swap.proxy.smanager.SwapManager;
 import hot.swap.proxy.utils.RotatingMap;
+import hot.swap.proxy.zk.WatcherCallBack;
+import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +25,12 @@ public class WorkerData {
     private SwapManager manager;
     private MessageCenter messageCenter;
 
-    private WorkerData(Map conf){
+    public WorkerData(Map conf){
         this.conf = conf;
-     //   componentRotatingMap = new RotatingMap<String, SComponent>(null);
+    }
+
+    public void setHuskaZkCluster(HuskaZkCluster huskaZkCluster){
+        this.huskaZkCluster = huskaZkCluster;
     }
 
     public Map<Object, Object> getConf() {

@@ -1,4 +1,4 @@
-package hot.swap.proxy;
+package hot.swap.proxy.base;
 
 import java.util.HashMap;
 
