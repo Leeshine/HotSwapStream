@@ -4,6 +4,7 @@ import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.dotparser.TopologyGraph;
 import hot.swap.proxy.cluster.HuskaZkCluster;
 import hot.swap.proxy.stream.DotTransferTop;
+import hot.swap.proxy.stream.DynamicTopology;
 import hot.swap.proxy.stream.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,12 @@ public class TopologyServer implements Runnable{
         String topology_name = topology.getTopologyName();
 
         Topology pre_topology = huskaZkCluster.getTopology(topology_name);
+        DynamicTopology dynamicTopology = new DynamicTopology();
+        dynamicTopology.initWithTopologies(pre_topology,topology);
+
+        if(dynamicTopology.needModify()){
+            huskaZkCluster.addDynamicTopology(dynamicTopology);
+        }
     }
 
     public void stopCurrentTopology(String topology_name) throws Exception{

@@ -1,6 +1,7 @@
 package hot.swap.proxy.cluster;
 
 import hot.swap.proxy.base.SComponent;
+import hot.swap.proxy.stream.DynamicTopology;
 import hot.swap.proxy.stream.StreamBuilder;
 import hot.swap.proxy.stream.Topology;
 import hot.swap.proxy.utils.Utils;
@@ -111,6 +112,12 @@ public class HuskaZkCluster {
         String name = topology.getTopologyName();
         String path = Cluster.topology_path(name);
         setObject(path,topology);
+    }
+
+    public void addDynamicTopology(DynamicTopology dynamicTopology) throws Exception{
+        String name = dynamicTopology.getTopology_name();
+        String path = Cluster.dynamic_path(name);
+        setObject(path,dynamicTopology);
     }
 
     public void close(){

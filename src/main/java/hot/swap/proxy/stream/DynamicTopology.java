@@ -25,6 +25,10 @@ public class DynamicTopology implements Serializable{
         deleteInputList = new HashMap<String, List<String>>();
     }
 
+    public String getTopology_name(){
+        return topology_name;
+    }
+
     public void initWithTopologies(Topology pre_topology, Topology cur_topology){
         topology_name = pre_topology.getTopologyName();
 
