@@ -82,6 +82,7 @@ public class TopologyServer implements Runnable{
         dynamicTopology.initWithTopologies(pre_topology,topology);
 
         if(dynamicTopology.needModify()){
+            huskaZkCluster.addTopology(topology);
             huskaZkCluster.addDynamicTopology(dynamicTopology);
         }
     }

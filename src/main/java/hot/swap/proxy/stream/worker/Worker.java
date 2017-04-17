@@ -2,6 +2,7 @@ package hot.swap.proxy.stream.worker;
 
 import hot.swap.proxy.base.SComponent;
 import hot.swap.proxy.base.Shutdown;
+import hot.swap.proxy.cluster.Cluster;
 import hot.swap.proxy.cluster.HuskaZkCluster;
 import hot.swap.proxy.message.IConnection;
 import hot.swap.proxy.message.LocalConnection;
@@ -10,7 +11,14 @@ import hot.swap.proxy.message.QueueManager;
 import hot.swap.proxy.smanager.SwapManager;
 import hot.swap.proxy.smodule.SwapModule;
 import hot.swap.proxy.sproxy.SwapProxy;
+import hot.swap.proxy.stream.DynamicTopology;
 import hot.swap.proxy.stream.Topology;
+import hot.swap.proxy.utils.Utils;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +30,7 @@ import java.util.Map;
  * Created by leeshine on 4/11/17.
  */
 
-public class Worker implements Runnable,Shutdown{
+public class Worker implements Runnable,Shutdown {
     private static Logger LOG = LoggerFactory.getLogger(Worker.class);
 
     private Map conf;
@@ -33,6 +41,12 @@ public class Worker implements Runnable,Shutdown{
     private String workerName;
     private Thread thread;
 
+    private PathChildrenCache dynamicCache;
+    private static final String DYNAMIC_PATH = Cluster.DYNAMIC_SUBTREE;
+
+    private PathChildrenCache pluginCache;
+    private static final String PLUGIN_PATH = Cluster.PLUGINS_SUBTREE;
+
     private Map<String,SComponent> componentMap;
     private SwapManager swapManager;
 
@@ -41,10 +55,22 @@ public class Worker implements Runnable,Shutdown{
         this.workerData = workerData;
         //this.huskaZkCluster = workerData.getHuskaZkCluster();
         this.componentMap = new HashMap<String, SComponent>();
+        init();
+    }
 
+    public void init() throws Exception{
         initZK();
 
+        dynamicCache = new PathChildrenCache(huskaZkCluster.getClient(),DYNAMIC_PATH,true);
+        dynamicCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
+        dynamicCache.getListenable().addListener(new DynamicListener());
+
+        pluginCache = new PathChildrenCache(huskaZkCluster.getClient(),PLUGIN_PATH,true);
+        pluginCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
+        pluginCache.getListenable().addListener(new PluginListener());
     }
+
+
 
     public SwapManager getSwapManager(){
         return swapManager;
@@ -96,8 +122,35 @@ public class Worker implements Runnable,Shutdown{
         thread.start();*/
     }
 
-    public void updateCurrentTopology(Topology topology){
+    class DynamicListener implements PathChildrenCacheListener{
+        public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
+            PathChildrenCacheEvent.Type eventType = pathChildrenCacheEvent.getType();
+            ChildData childData = pathChildrenCacheEvent.getData();
+            byte[] data = childData.getData();
 
+            if(eventType.equals(PathChildrenCacheEvent.Type.CHILD_ADDED)){
+                updateCurrentTopology(data);
+            }
+        }
+    }
+
+    class PluginListener implements  PathChildrenCacheListener{
+        public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
+            PathChildrenCacheEvent.Type eventType = pathChildrenCacheEvent.getType();
+            ChildData childData = pathChildrenCacheEvent.getData();
+            byte[] data = childData.getData();
+
+            if(eventType.equals(PathChildrenCacheEvent.Type.CHILD_ADDED)){
+                swapComponent(data);
+            }
+        }
+    }
+
+    public void updateCurrentTopology(byte[] data){
+        DynamicTopology dynamicTopology = (DynamicTopology)Utils.deserialize(data);
+    }
+
+    public void swapComponent(byte[] data){
     }
 
     public void stopCurrentTopology(){

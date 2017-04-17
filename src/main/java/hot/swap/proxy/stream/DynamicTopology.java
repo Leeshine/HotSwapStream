@@ -80,6 +80,22 @@ public class DynamicTopology implements Serializable{
 
     }
 
+    public Set<String> getNewComponents() {
+        return newComponents;
+    }
+
+    public Set<String> getDeleteComponents() {
+        return deleteComponents;
+    }
+
+    public Map<String, List<String>> getNewInputList() {
+        return newInputList;
+    }
+
+    public Map<String, List<String>> getDeleteInputList() {
+        return deleteInputList;
+    }
+
     public boolean needModify(){
         return modify;
     }
